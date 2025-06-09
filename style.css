@@ -1,0 +1,56 @@
+body {
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  color: #fff;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+h2 { margin-top: 20px; }
+.section { padding: 30px; }
+input, button {
+  padding: 12px;
+  margin: 10px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+}
+input {
+  width: 200px;
+  text-align: center;
+  border: 2px solid #fff;
+}
+button {
+  background-color: #ff6b81;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+button:hover { background-color: #ff4757; }
+.choices button {
+  margin: 5px;
+}
+.popup {
+  display: none;
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  color: #333;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  z-index: 1000;
+}
+.popup p {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+.popup button {
+  background: #1dd1a1;
+  margin: 10px;
+}
+.popup button:hover { background: #10ac84; }
