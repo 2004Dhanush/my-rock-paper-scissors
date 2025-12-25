@@ -197,8 +197,8 @@ p { font-size: 1.1rem; margin: 10px 0; opacity: 0.9; }
 <p id="round" style="font-size: 1.2rem;"></p>
 <p id="score"></p>
 <div class="choices-container">
-<button class="choice-btn" onclick="play('rock')"><span class="emoji">🗨</span><span>Rock</span></button>
-<button class="choice-btn" onclick="play('paper')"><span class="emoji">📋</span><span>Paper</span></button>
+<button class="choice-btn" onclick="play('rock')"><span class="emoji">✊</span><span>Rock</span></button>
+<button class="choice-btn" onclick="play('paper')"><span class="emoji">✋</span><span>Paper</span></button>
 <button class="choice-btn" onclick="play('scissors')"><span class="emoji">✌️</span><span>Scissor</span></button>
 </div>
 <div class="result-area">
@@ -308,8 +308,7 @@ function start(r) {
 function play(choice) {
   if (round >= rounds) return;
   const comp = board[Math.floor(Math.random() * 3)];
-  const emojis = {rock: '🗨', paper: '📋', scissors: '✌️'};
-  
+const emojis = {rock: '✊', paper: '✋', scissors: '✌️'};  
   document.getElementById('playerMove').innerText = emojis[choice];
   document.getElementById('computerMove').innerText = emojis[comp];
   document.getElementById('moveAudio').play();
