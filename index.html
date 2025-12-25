@@ -1,50 +1,392 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Rock Paper Scissors</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rock Paper Scissor Pro - Enhanced Game</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --primary: #667eea;
+  --secondary: #764ba2;
+  --accent: #f5576c;
+  --dark: #1a1a2e;
+  --light: #ffffff;
+}
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, var(--dark) 0%, #2d2d44 100%);
+  color: var(--light);
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.container { width: 100%; max-width: 700px; }
+h1 { font-size: 2.5rem; margin-bottom: 10px; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+h2 { font-size: 1.8rem; margin: 20px 0; color: var(--light); }
+.section {
+  padding: 40px 30px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  margin: 20px 0;
+  animation: slideIn 0.3s ease;
+}
+@keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+input { width: 250px; padding: 12px 20px; margin: 10px; font-size: 1rem; border-radius: 10px; border: 2px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.9); color: #333; text-align: center; outline: none; transition: all 0.3s ease; }
+input:focus { background: var(--light); border: 2px solid var(--primary); box-shadow: 0 0 10px rgba(102, 126, 234, 0.5); transform: scale(1.02); }
+button {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: var(--light);
+  padding: 13px 30px;
+  margin: 10px;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 150px;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); }
+button:active { transform: translateY(0); }
+button.secondary { background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.2); }
+button.secondary:hover { background: rgba(255, 255, 255, 0.15); }
+.mode-buttons { display: flex; flex-direction: column; gap: 15px; margin: 20px 0; }
+.mode-btn { padding: 15px 30px; font-size: 1.1rem; width: 100%; }
+.stats-card {
+  background: rgba(255, 255, 255, 0.12);
+  padding: 20px;
+  border-radius: 15px;
+  margin: 15px 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.stat-item { background: rgba(255, 255, 255, 0.08); padding: 15px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); }
+.stat-label { font-size: 0.9rem; opacity: 0.8; display: block; margin-bottom: 5px; }
+.stat-value { font-size: 1.8rem; display: block; color: var(--primary); font-weight: bold; }
+.choices-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 30px 0;
+  flex-wrap: wrap;
+}
+.choice-btn {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.9rem;
+  padding: 0;
+  min-width: auto;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+.choice-btn:hover {
+  transform: scale(1.15) rotateY(10deg);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+}
+.choice-btn .emoji { font-size: 2.5rem; margin-bottom: 5px; }
+.result-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin: 30px 0;
+  min-height: 150px;
+}
+.move-display {
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+@keyframes popIn {
+  0% { transform: scale(0) rotateZ(-180deg); opacity: 0; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1) rotateZ(0deg); opacity: 1; }
+}
+.vs-text { font-size: 1.3rem; opacity: 0.6; font-weight: bold; }
+.popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, var(--dark), #2d2d44);
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  color: var(--light);
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  text-align: center;
+  min-width: 300px;
+  animation: slideIn 0.3s ease;
+}
+.popup-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); z-index: 999; }
+.popup-overlay.active, .popup.active { display: block; }
+.popup p { font-size: 1.5rem; margin-bottom: 20px; font-weight: bold; }
+.popup button { margin: 8px; min-width: 120px; }
+.hidden { display: none !important; }
+.user-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 15px; background: rgba(102, 126, 234, 0.1); border-radius: 10px; border: 1px solid rgba(102, 126, 234, 0.2); }
+.user-info span { font-weight: bold; color: var(--primary); }
+p { font-size: 1.1rem; margin: 10px 0; opacity: 0.9; }
+@media (max-width: 480px) { h1 { font-size: 2rem; } h2 { font-size: 1.5rem; } .choice-btn { width: 100px; height: 100px; } input { width: 90%; } }
+</style>
 </head>
 <body>
+<div class="container">
+<!-- LOGIN -->
+<div id="loginPage" class="section">
+<h1>✊ Rock Paper Scissor</h1>
+<h2>Login</h2>
+<input type="text" id="username" placeholder="Username" maxlength="50">
+<input type="password" id="password" placeholder="Password" maxlength="50">
+<button onclick="login()">Login</button>
+<p style="margin-top: 15px; opacity: 0.7;">New? <span onclick="toggleSignup()" style="color: var(--primary); cursor: pointer; text-decoration: underline;">Sign Up</span></p>
+<div id="signupDiv" class="hidden">
+<input type="text" id="newUsername" placeholder="Create Username" maxlength="50" style="margin-top: 15px;">
+<input type="password" id="newPassword" placeholder="Create Password" maxlength="50">
+<button onclick="signup()">Sign Up</button>
+</div>
+</div>
 
-  <!-- NAME ENTRY -->
-  <div id="namePage" class="section">
-    <h2>🎮 Enter Your Name</h2>
-    <input type="text" id="playerNameInput" placeholder="Your name" />
-    <br />
-    <button onclick="submitName()">Continue</button>
-  </div>
+<!-- MODE -->
+<div id="modePage" class="section hidden">
+<div class="user-info">
+<span>👤 <span id="user"></span></span>
+<button class="secondary" onclick="logout()" style="min-width: 100px; padding: 8px 15px; font-size: 0.9rem;">Logout</button>
+</div>
+<h1>💪 Rock Paper Scissor Pro</h1>
+<div class="stats-card">
+<div class="stat-item"><span class="stat-label">Wins</span><span class="stat-value" id="wins">0</span></div>
+<div class="stat-item"><span class="stat-label">Losses</span><span class="stat-value" id="losses">0</span></div>
+<div class="stat-item"><span class="stat-label">Draws</span><span class="stat-value" id="draws">0</span></div>
+</div>
+<div class="mode-buttons">
+<button class="mode-btn" onclick="start(3)">3 Rounds</button>
+<button class="mode-btn" onclick="start(5)">5 Rounds</button>
+<button class="mode-btn" onclick="start(10)">10 Rounds</button>
+</div>
+<button onclick="resetStats()" style="background: rgba(255,50,50,0.3); margin-top: 20px;">Reset Stats</button>
+</div>
 
-  <!-- MODE SELECTION -->
-  <div id="modePage" class="section" style="display:none;">
-    <h2>👋 Welcome, <span id="displayName"></span>!</h2>
-    <p>Select number of rounds:</p>
-    <button onclick="startGame(3)">3 Rounds</button>
-    <button onclick="startGame(5)">5 Rounds</button>
-  </div>
+<!-- GAME -->
+<div id="gamePage" class="section hidden">
+<h1>💪 Rock Paper Scissor</h1>
+<p id="round" style="font-size: 1.2rem;"></p>
+<p id="score"></p>
+<div class="choices-container">
+<button class="choice-btn" onclick="play('rock')"><span class="emoji">🗨</span><span>Rock</span></button>
+<button class="choice-btn" onclick="play('paper')"><span class="emoji">📋</span><span>Paper</span></button>
+<button class="choice-btn" onclick="play('scissors')"><span class="emoji">✌️</span><span>Scissor</span></button>
+</div>
+<div class="result-area">
+<div class="move-display" id="playerMove"></div>
+<div class="vs-text">VS</div>
+<div class="move-display" id="computerMove"></div>
+</div>
+<p id="result" style="font-size: 1.3rem; margin-top: 20px; min-height: 30px;"></p>
+<button onclick="backMenu()" class="secondary" style="margin-top: 20px;">Back</button>
+</div>
+</div>
 
-  <!-- GAME SECTION -->
-  <div id="gamePage" class="section" style="display:none;">
-    <h2>✊✋✌️ Rock Paper Scissors vs Computer</h2>
-    <p id="roundInfo"></p>
-    <p id="scoreInfo"></p>
-    <div class="choices">
-      <button onclick="makeMove('rock')">🪨 Rock</button>
-      <button onclick="makeMove('paper')">📄 Paper</button>
-      <button onclick="makeMove('scissors')">✂️ Scissors</button>
-    </div>
-    <div id="resultArea"></div>
-  </div>
+<!-- POPUP -->
+<div id="overlay" class="popup-overlay"></div>
+<div id="popup" class="popup">
+<p id="msg"></p>
+<button onclick="backMenu()" style="margin-right: 10px;">Back</button>
+<button onclick="start(rounds)">Play Again</button>
+</div>
 
-  <!-- POPUP -->
-  <div id="popup" class="popup">
-    <p id="popupMessage"></p>
-    <div id="popupButtons">
-      <button onclick="backToMenu()">↩ Back to Menu</button>
-    </div>
-  </div>
+<!-- AUDIO -->
+<audio id="moveAudio" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_b7d215b64a.mp3?filename=click-124467.mp3"></audio>
+<audio id="winAudio" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_729d11b616.mp3?filename=success-1-6297.mp3"></audio>
 
-  <script src="script.js"></script>
+<script>
+let users = JSON.parse(localStorage.getItem('rpsUsers') || '{}');
+let currentUser = localStorage.getItem('rpsCurrentUser') || null;
+let stats = {};
+let board = ['rock', 'paper', 'scissors'];
+let round = 0;
+let rounds = 0;
+let playerWins = 0, computerWins = 0, draws = 0;
+
+function init() {
+  if (currentUser && users[currentUser]) {
+    show('modePage');
+    document.getElementById('user').innerText = currentUser;
+    loadStats();
+    updateStats();
+  } else {
+    show('loginPage');
+  }
+}
+
+function show(page) {
+  document.querySelectorAll('[id$="Page"], #overlay, #popup').forEach(el => {
+    if (el.id !== 'overlay' && el.id !== 'popup') el.classList.add('hidden');
+  });
+  if (page === 'gamePage') document.getElementById('gamePage').classList.remove('hidden');
+  else if (page === 'modePage') document.getElementById('modePage').classList.remove('hidden');
+  else if (page === 'loginPage') document.getElementById('loginPage').classList.remove('hidden');
+}
+
+function toggleSignup() {
+  document.getElementById('signupDiv').classList.toggle('hidden');
+}
+
+function signup() {
+  const u = document.getElementById('newUsername').value.trim();
+  const p = document.getElementById('newPassword').value;
+  if (!u || !p) { alert('Fill all'); return; }
+  if (users[u]) { alert('Exists'); return; }
+  users[u] = { p, stats: {wins: 0, losses: 0, draws: 0} };
+  localStorage.setItem('rpsUsers', JSON.stringify(users));
+  alert('Created! Login now');
+  toggleSignup();
+  document.getElementById('newUsername').value = '';
+  document.getElementById('newPassword').value = '';
+}
+
+function login() {
+  const u = document.getElementById('username').value.trim();
+  const p = document.getElementById('password').value;
+  if (!u || !p) { alert('Fill'); return; }
+  if (users[u] && users[u].p === p) {
+    currentUser = u;
+    localStorage.setItem('rpsCurrentUser', u);
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+    show('modePage');
+    document.getElementById('user').innerText = u;
+    loadStats();
+    updateStats();
+  } else {
+    alert('Invalid');
+  }
+}
+
+function logout() {
+  if (confirm('Logout?')) {
+    currentUser = null;
+    localStorage.removeItem('rpsCurrentUser');
+    show('loginPage');
+  }
+}
+
+function start(r) {
+  rounds = r;
+  round = 0;
+  playerWins = 0;
+  computerWins = 0;
+  draws = 0;
+  show('gamePage');
+  updateRound();
+}
+
+function play(choice) {
+  if (round >= rounds) return;
+  const comp = board[Math.floor(Math.random() * 3)];
+  const emojis = {rock: '🗨', paper: '📋', scissors: '✌️'};
+  
+  document.getElementById('playerMove').innerText = emojis[choice];
+  document.getElementById('computerMove').innerText = emojis[comp];
+  document.getElementById('moveAudio').play();
+  
+  let resultText = '';
+  if (choice === comp) {
+    resultText = '🤝 Draw';
+    draws++;
+  } else if ((choice === 'rock' && comp === 'scissors') || (choice === 'paper' && comp === 'rock') || (choice === 'scissors' && comp === 'paper')) {
+    resultText = '🎉 You Win';
+    playerWins++;
+    document.getElementById('winAudio').play();
+  } else {
+    resultText = '🤖 Computer Wins';
+    computerWins++;
+  }
+  
+  document.getElementById('result').innerText = resultText;
+  round++;
+  updateRound();
+  
+  if (round >= rounds) {
+    setTimeout(() => {
+      let msg = playerWins > computerWins ? '🌟 YOU WON!' : computerWins > playerWins ? '🤖 COMPUTER WON' : '🤝 DRAW!';
+      stats.wins += playerWins > computerWins ? 1 : 0;
+      stats.losses += computerWins > playerWins ? 1 : 0;
+      stats.draws += playerWins === computerWins ? 1 : 0;
+      saveStats();
+      document.getElementById('msg').innerText = msg;
+      document.getElementById('overlay').classList.add('active');
+      document.getElementById('popup').classList.add('active');
+      updateStats();
+    }, 1000);
+  }
+}
+
+function updateRound() {
+  document.getElementById('round').innerText = `Round ${round + 1} of ${rounds}`;
+  document.getElementById('score').innerText = `You: ${playerWins} | Computer: ${computerWins} | Draws: ${draws}`;
+}
+
+function backMenu() {
+  document.getElementById('overlay').classList.remove('active');
+  document.getElementById('popup').classList.remove('active');
+  show('modePage');
+  updateStats();
+}
+
+function loadStats() {
+  if (currentUser && users[currentUser]) {
+    stats = users[currentUser].stats || {wins: 0, losses: 0, draws: 0};
+  }
+}
+
+function saveStats() {
+  if (currentUser && users[currentUser]) {
+    users[currentUser].stats = stats;
+    localStorage.setItem('rpsUsers', JSON.stringify(users));
+  }
+}
+
+function updateStats() {
+  loadStats();
+  document.getElementById('wins').innerText = stats.wins || 0;
+  document.getElementById('losses').innerText = stats.losses || 0;
+  document.getElementById('draws').innerText = stats.draws || 0;
+}
+
+function resetStats() {
+  if (confirm('Reset all?')) {
+    stats = {wins: 0, losses: 0, draws: 0};
+    saveStats();
+    updateStats();
+  }
+}
+
+init();
+</script>
 </body>
 </html>
